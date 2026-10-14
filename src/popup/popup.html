@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Action Mimic</title>
+  <link rel="stylesheet" href="../shared/ui.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="../../icons/icon32.png" alt="" width="20" height="20">
+    <h1>Action Mimic</h1>
+    <button id="open-settings" class="icon-btn" title="Settings" aria-label="Settings">⚙</button>
+  </header>
+
+  <div id="error" class="banner error" hidden></div>
+  <div id="result" class="banner" hidden>
+    <div class="banner-body"></div>
+    <button class="link" id="dismiss-result">Dismiss</button>
+  </div>
+
+  <!-- Idle: record + scripts for this page -->
+  <section id="view-idle" hidden>
+    <button id="record" class="btn primary big"><span class="rec-dot"></span>Record</button>
+    <p id="not-recordable" class="muted small" hidden>Recording and playback aren't available on this page.</p>
+
+    <div class="section-head">
+      <h2 id="list-title">Scripts for this site</h2>
+      <label class="small muted"><input type="checkbox" id="show-all"> Show all</label>
+    </div>
+    <input id="filter" type="search" placeholder="Filter scripts…" class="input" hidden>
+    <ul id="script-list" class="script-list"></ul>
+    <p id="empty" class="muted small" hidden></p>
+  </section>
+
+  <!-- Recording in progress -->
+  <section id="view-recording" hidden>
+    <div class="status rec"><span class="rec-dot pulse"></span><strong>Recording</strong> · <span id="rec-count">0</span> steps</div>
+    <p class="muted small">Interact with the page normally. Clicks, typing, selections, checkboxes and Enter/Escape are captured — including inside iframes.</p>
+    <ol id="rec-steps" class="step-preview"></ol>
+    <div class="row">
+      <button id="stop" class="btn primary">■ Stop</button>
+      <button id="cancel" class="btn">Discard</button>
+    </div>
+  </section>
+
+  <!-- Stopped, awaiting save -->
+  <section id="view-pending" hidden>
+    <h2>Save recording</h2>
+    <label class="field">Name
+      <input id="save-name" class="input" required>
+    </label>
+    <label class="field"><span>Description <span class="muted">(optional)</span></span>
+      <textarea id="save-desc" class="input" rows="2"></textarea>
+    </label>
+    <label class="field">Available on
+      <select id="save-scope-type" class="input"></select>
+    </label>
+    <label class="field" id="scope-value-field">
+      <input id="save-scope-value" class="input">
+      <span id="scope-hint" class="muted small"></span>
+    </label>
+    <p id="scope-match" class="small"></p>
+    <details>
+      <summary class="small"><span id="pending-count">0</span> recorded steps</summary>
+      <ol id="pending-steps" class="step-preview"></ol>
+    </details>
+    <div class="row">
+      <button id="save" class="btn primary">Save script</button>
+      <button id="discard" class="btn">Discard</button>
+    </div>
+  </section>
+
+  <!-- Playback in progress -->
+  <section id="view-playing" hidden>
+    <div class="status play">▶ <strong id="play-name"></strong></div>
+    <progress id="play-progress" max="1" value="0"></progress>
+    <p class="small muted">Step <span id="play-index">0</span> of <span id="play-total">0</span></p>
+    <button id="stop-play" class="btn primary">■ Stop playback</button>
+  </section>
+
+  <footer>
+    <button id="open-manager" class="link">Manage scripts</button>
+    <span class="muted small">Alt+Shift+R toggles recording</span>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

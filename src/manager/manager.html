@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Action Mimic – Scripts</title>
+  <link rel="icon" href="../../icons/icon32.png">
+  <link rel="stylesheet" href="../shared/ui.css">
+  <link rel="stylesheet" href="manager.css">
+</head>
+<body>
+  <nav>
+    <div class="brand"><img src="../../icons/icon48.png" alt="" width="28" height="28"><h1>Action Mimic</h1></div>
+    <a href="#scripts" data-view="scripts">Scripts</a>
+    <a href="#settings" data-view="settings">Settings</a>
+    <a href="#transfer" data-view="transfer">Import / Export</a>
+  </nav>
+
+  <main>
+    <div id="toast" class="toast" hidden></div>
+
+    <!-- Script list -->
+    <section id="view-scripts" hidden>
+      <div class="page-head">
+        <h2>Scripts</h2>
+        <input id="search" type="search" class="input" placeholder="Search name, description or scope…">
+      </div>
+      <table class="table" id="script-table">
+        <thead>
+          <tr>
+            <th class="chk"><input type="checkbox" id="select-all" title="Select all"></th>
+            <th>Name</th>
+            <th>Available on</th>
+            <th class="num">Steps</th>
+            <th>Updated</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p id="no-scripts" class="muted" hidden>No scripts yet. Open a site, click the Action Mimic toolbar button and hit <strong>Record</strong>.</p>
+      <div class="row bulk" id="bulk" hidden>
+        <span id="bulk-count"></span>
+        <button class="btn" id="bulk-export">Export selected</button>
+        <button class="btn danger" id="bulk-delete">Delete selected</button>
+      </div>
+    </section>
+
+    <!-- Script editor -->
+    <section id="view-edit" hidden>
+      <div class="page-head">
+        <button class="link" id="back">← All scripts</button>
+        <div class="row">
+          <span id="dirty" class="muted small" hidden>Unsaved changes</span>
+          <button class="btn" id="edit-export">Export</button>
+          <button class="btn" id="edit-duplicate">Duplicate</button>
+          <button class="btn danger" id="edit-delete">Delete</button>
+          <button class="btn primary" id="edit-save">Save</button>
+        </div>
+      </div>
+
+      <div class="card grid">
+        <label class="field">Name <input id="e-name" class="input"></label>
+        <label class="field">Available on
+          <div class="row">
+            <select id="e-scope-type" class="input"></select>
+            <input id="e-scope-value" class="input">
+          </div>
+          <span id="e-scope-hint" class="muted small"></span>
+        </label>
+        <label class="field span2">Description <textarea id="e-desc" class="input" rows="2"></textarea></label>
+        <div class="field span2">Recorded on <span id="e-start" class="muted mono"></span></div>
+      </div>
+
+      <h3>Steps</h3>
+      <p class="muted small">Edit values to change the data a script enters without re-recording. Selectors are tried in order; the first is shown here.</p>
+      <table class="table steps" id="steps-table">
+        <thead>
+          <tr><th class="num">#</th><th>Action</th><th>Target</th><th>Value</th><th>Frame</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="row">
+        <button class="btn" id="add-wait">+ Wait</button>
+        <button class="btn" id="add-nav">+ Go to URL</button>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section id="view-settings" hidden>
+      <div class="page-head"><h2>Settings</h2><button class="btn" id="reset-settings">Reset to defaults</button></div>
+      <form id="settings-form" class="card settings">
+        <h3>Playback speed</h3>
+        <label class="setting">
+          <span>Timing<small>Fixed delay between every step, or reproduce the pauses from when you recorded.</small></span>
+          <select name="timingMode" class="input">
+            <option value="fixed">Fixed delay</option>
+            <option value="recorded">As recorded</option>
+          </select>
+        </label>
+        <label class="setting" data-when="fixed">
+          <span>Delay between steps<small>Milliseconds.</small></span>
+          <input name="stepDelay" type="number" min="0" step="50" class="input">
+        </label>
+        <label class="setting" data-when="recorded">
+          <span>Speed multiplier<small>2 = twice as fast as recorded, 0.5 = half speed.</small></span>
+          <input name="speedMultiplier" type="number" min="0.1" max="20" step="0.1" class="input">
+        </label>
+        <label class="setting" data-when="recorded">
+          <span>Longest pause<small>Caps any single recorded pause (ms).</small></span>
+          <input name="maxRecordedDelay" type="number" min="0" step="100" class="input">
+        </label>
+        <label class="setting">
+          <span>Typing delay<small>Milliseconds per character, so you can watch fields fill. 0 fills instantly.</small></span>
+          <input name="typingDelay" type="number" min="0" step="5" class="input">
+        </label>
+
+        <h3>Playback behavior</h3>
+        <label class="setting">
+          <span>Element timeout<small>How long to wait for an element, iframe or page load before the step fails (ms).</small></span>
+          <input name="elementTimeout" type="number" min="500" step="500" class="input">
+        </label>
+        <label class="setting">
+          <span>When a step fails</span>
+          <select name="onError" class="input">
+            <option value="stop">Stop the script</option>
+            <option value="skip">Skip it and continue</option>
+          </select>
+        </label>
+        <label class="setting toggle">
+          <span>Wait for page loads<small>Before each step, wait until the tab finishes loading.</small></span>
+          <input name="waitForPageLoad" type="checkbox">
+        </label>
+        <label class="setting toggle">
+          <span>Highlight elements<small>Briefly outline each element as it is acted on.</small></span>
+          <input name="highlight" type="checkbox">
+        </label>
+
+        <h3>Recording</h3>
+        <label class="setting toggle">
+          <span>Show in-page indicator<small>Floating REC / progress pill with a Stop button.</small></span>
+          <input name="showOverlay" type="checkbox">
+        </label>
+        <label class="setting toggle">
+          <span>Record password values<small>Off: password steps are saved blank and you fill them in here. On: stored in plain text in extension storage and included in exports.</small></span>
+          <input name="recordPasswords" type="checkbox">
+        </label>
+      </form>
+    </section>
+
+    <!-- Import / export -->
+    <section id="view-transfer" hidden>
+      <div class="page-head"><h2>Import / Export</h2></div>
+      <div class="card">
+        <h3>Export</h3>
+        <p class="muted">Scripts are stored only in this browser. Export them to a JSON file to move them to another device. To export only some scripts, select them on the Scripts page.</p>
+        <button class="btn primary" id="export-all">Export all scripts</button>
+      </div>
+      <div class="card">
+        <h3>Import</h3>
+        <p class="muted">Load a file exported from Action Mimic.</p>
+        <label class="row small"><input type="checkbox" id="import-replace"> Replace existing scripts that have the same ID (otherwise they're imported as copies)</label>
+        <div class="row">
+          <input type="file" id="import-file" accept=".json,application/json" hidden>
+          <button class="btn primary" id="import-btn">Choose file…</button>
+        </div>
+        <p id="import-result" class="small"></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="manager.js"></script>
+</body>
+</html>

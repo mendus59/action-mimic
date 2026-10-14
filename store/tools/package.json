@@ -1,0 +1,12 @@
+{
+  "name": "action-mimic-store-assets",
+  "private": true,
+  "type": "module",
+  "description": "Generates Chrome Web Store screenshots and promo tiles by driving the real extension.",
+  "scripts": {
+    "assets": "node generate.mjs"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.0.0"
+  }
+}
