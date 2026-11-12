@@ -1,5 +1,15 @@
 # action-mimic
 
+<!-- site-summary:start -->
+<!-- This section is this project's card on https://mendus59.github.io and is copied there daily.
+     Keep it true of what's on main: one plain-text summary line (max 160 characters), then 1-6 short bullets.
+     See CLAUDE.md ("Site summary"). -->
+A Chrome extension that records and replays front-end QA actions.
+
+- Records clicks, typing, selects and navigation, including inside cross-origin iframes, and saves them as a script scoped to a site.
+- Replays a script on demand, highlighting each step; edit values, selectors and waits without re-recording.
+<!-- site-summary:end -->
+
 A QA testing Chrome extension that records the actions you take on a web page, saves them as a script scoped to a site, and replays them on demand. It's useful for states that are tedious to reach and easy to fat-finger, such as a long form inside an iframe on a page that's only reachable after logging in with the right permissions.
 
 ## Install (unpacked)
